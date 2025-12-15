@@ -15,63 +15,38 @@ try {
 }
 
 const rawData = await fs.readFile(filePath);
-const data = await JSON.parse(rawData);
+let data = JSON.parse(rawData);
 
-export async function addExpense(opts) {
-  const [description, expenseDescription, amount] = opts;
-  const expenseAmount = Number(opts[3]);
-
-  if (description !== "--description" || amount !== "--amount") {
-    throw new Error("Comando invalido");
-  }
-
-  if (typeof expenseAmount !== "number" || !Number.isFinite(expenseAmount)) {
-    throw new Error("Precio invalido, inserte un numero.");
-  }
-
-  const maxId = Math.max(0, ...data.map((item) => item.id));
-  const id = maxId + 1;
+export async function addExpense({description, amount}) {
+  const maxId = Math.max(0, ...data.map((item) => item.Id));
+  const expenseId = maxId + 1;
 
   const expenseTemplate = {
-    Id: id,
-    Description: expenseDescription,
-    Amount: expenseAmount,
-    CreateAt: new Date().toDateString(),
+    Id: expenseId,
+    Description:description,
+    Amount: amount,
+    CreateAt: new Date().toLocaleString(),
     UpdateAt: null,
   };
 
   data.push(expenseTemplate);
   await fs.writeFile(filePath, JSON.stringify(data, null, 2), "utf8");
-  console.log(`Gasto agregado correctamente. (ID: ${id})`);
+  console.log(`Gasto agregado correctamente. (ID: ${expenseId})`);
 }
 
 export async function updExpense(opts) {
   console.log(opts);
 }
 
-export async function delExpense(opts) {
-  const [option, id] = opts;
-  const expenseId = Number(id);
-
-  if (opts.length === 0 || opts.length > 2) {
-    throw new Error(
-      "El comando delete debe tener la opcion --id y el id en cuestion",
-    );
+export async function delExpense({expenseId}) {
+  const expense = data.find(({Id}) => Id === expenseId)
+  
+  if (!expense) {
+    console.error('No existe ningun elemento con ese id');
+    return
   }
-
-  if (option !== "--id") {
-    throw new Error("Argumento invalido");
-  }
-
-  if (id === undefined) {
-    throw new Error("Falta el argumento id");
-  }
-
-  if (typeof expenseId !== "number" || !Number.isFinite(expenseId)) {
-    throw new Error("El id debe ser un numero");
-  }
-
-  const newData = data.filter(({ id }) => id !== expenseId);
+  
+  data = data.filter(({ Id }) => Id !== expenseId);
 
   await fs.writeFile(filePath, JSON.stringify(newData, null, 2), "utf8");
   console.log("Gasto eliminado correctamente");
