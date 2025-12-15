@@ -9,13 +9,13 @@ export function crud(action, opts) {
   try {
     switch (action) {
       case "add":
-        addExpense(opts);
+        addExpense({ description: opts.description, amount: opts.amount });
         break;
       case "update":
         updExpense(opts);
         break;
       case "delete":
-        delExpense(opts);
+        delExpense({ expenseId: opts.id });
         break;
       case "list":
         listExpenses(opts);
