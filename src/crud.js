@@ -12,7 +12,11 @@ export function crud(action, opts) {
         addExpense({ description: opts.description, amount: opts.amount });
         break;
       case "update":
-        updExpense(opts);
+        updExpense({
+          expenseId: opts.id,
+          description: opts.description,
+          amount: opts.amount,
+        });
         break;
       case "delete":
         delExpense({ expenseId: opts.id });

@@ -1,6 +1,6 @@
-import fs from "fs/promises";
+import fs from "node:fs/promises";
 import path from "node:path";
-import { fileURLToPath } from "url";
+import { fileURLToPath } from "node:url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const filePath = path.join(__dirname, "../data", "data.json");
@@ -17,13 +17,13 @@ try {
 const rawData = await fs.readFile(filePath);
 let data = JSON.parse(rawData);
 
-export async function addExpense({description, amount}) {
+export async function addExpense({ description, amount }) {
   const maxId = Math.max(0, ...data.map((item) => item.Id));
   const expenseId = maxId + 1;
 
   const expenseTemplate = {
     Id: expenseId,
-    Description:description,
+    Description: description,
     Amount: amount,
     CreateAt: new Date().toLocaleString(),
     UpdateAt: null,
@@ -34,21 +34,38 @@ export async function addExpense({description, amount}) {
   console.log(`Gasto agregado correctamente. (ID: ${expenseId})`);
 }
 
-export async function updExpense(opts) {
-  console.log(opts);
+export async function updExpense({ expenseId, description, amount }) {
+  const expense = data.find(({ Id }) => Id === expenseId);
+
+  if (!expense) {
+    console.error("No existe ningun elemento con ese id");
+    return;
+  }
+
+  if (description) {
+    expense.Description = description;
+  }
+
+  if (amount) {
+    expense.Amount = amount;
+  }
+
+  expense.UpdateAt = new Date().toLocaleString();
+  await fs.writeFile(filePath, JSON.stringify(data, null, 2), "utf-8");
+  console.log(`El elemento ${expenseId} fue actualizado correctamente`);
 }
 
-export async function delExpense({expenseId}) {
-  const expense = data.find(({Id}) => Id === expenseId)
-  
+export async function delExpense({ expenseId }) {
+  const expense = data.find(({ Id }) => Id === expenseId);
+
   if (!expense) {
-    console.error('No existe ningun elemento con ese id');
-    return
+    console.error("No existe ningun elemento con ese id");
+    return;
   }
-  
+
   data = data.filter(({ Id }) => Id !== expenseId);
 
-  await fs.writeFile(filePath, JSON.stringify(newData, null, 2), "utf8");
+  await fs.writeFile(filePath, JSON.stringify(data, null, 2), "utf8");
   console.log("Gasto eliminado correctamente");
 }
 
