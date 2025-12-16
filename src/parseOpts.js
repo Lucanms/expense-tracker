@@ -15,21 +15,32 @@ export default function parsedOpts(opts) {
       throw new Error("Flag invalido");
     }
 
-    if (key === "--amount" || key === "--id") {
+    if (key === "--amount" || key === "--id" || key === "--month") {
       value = Number(value);
       if (!Number.isFinite(value)) {
         throw new Error(`El argumento de ${key} debe ser un numero`);
       }
     }
 
-    if (key === "--description" && value.length > 25) {
-      throw new Error("El maximo de caracteres permitido es de 25");
-    }
-
     if (key === "--description") {
+      if (value.length > 25) {
+        throw new Error("El maximo de caracteres permitido es de 25");
+      }
+
       if (!value || /^\d+$/.test(value)) {
         throw new Error("La descripción no puede ser solo números");
       }
+    }
+
+    if (key === "--month") {
+      const month = Number(value)
+      
+
+      if (month > 12 || month < 1 || !Number.isInteger(month)) {
+        throw new Error("Mes invalido");
+      }
+      
+      value = month < 10 ? `0${month}` : String(month);
     }
 
     result[key.slice(2)] = value;
