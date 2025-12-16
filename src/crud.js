@@ -26,7 +26,7 @@ export function crud(action, opts) {
         listExpenses();
         break;
       case "summary":
-        summaryExpenses();
+        summaryExpenses({month: opts.month});
         break;
       default:
         throw new Error("Accion invalida");
