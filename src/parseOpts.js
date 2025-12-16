@@ -21,6 +21,11 @@ export default function parsedOpts(opts) {
         throw new Error(`El argumento de ${key} debe ser un numero`);
       }
     }
+    
+    if (key === "--description" && value.length > 25) {
+      throw new Error('El maximo de caracteres permitido es de 25');
+    }
+    
     result[key.slice(2)] = value;
   }
   return result;
