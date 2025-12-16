@@ -25,7 +25,7 @@ export async function addExpense({ description, amount }) {
     Id: expenseId,
     Description: description,
     Amount: amount,
-    CreateAt: new Date().toLocaleString(),
+    CreateAt: new Date().toLocaleDateString(),
     UpdateAt: null,
   };
 
@@ -69,6 +69,22 @@ export async function delExpense({ expenseId }) {
   console.log("Gasto eliminado correctamente");
 }
 
-export async function listExpenses(opts) {
-  console.log(opts);
+export function listExpenses(opts) {
+  console.log(
+    "ID".padEnd(5),
+    "Fecha".padEnd(15),
+    "Descripción".padEnd(25),
+    "Precio".padStart(10),
+  );
+
+  console.log("-".repeat(60));
+
+  data.forEach(({ Id, CreateAt, Description, Amount }) => {
+    console.log(
+      String(Id).padEnd(5),
+      CreateAt.padEnd(15),
+      Description.slice(0, 25).padEnd(25),
+      `$${Amount.toFixed(2)}`.padStart(10),
+    );
+  });
 }
