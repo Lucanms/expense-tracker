@@ -3,6 +3,7 @@ import {
   updExpense,
   delExpense,
   listExpenses,
+  summaryExpenses,
 } from "../modules/crudFunctions.js";
 
 export function crud(action, opts) {
@@ -22,7 +23,10 @@ export function crud(action, opts) {
         delExpense({ expenseId: opts.id });
         break;
       case "list":
-        listExpenses(opts);
+        listExpenses();
+        break;
+      case "summary":
+        summaryExpenses();
         break;
       default:
         throw new Error("Accion invalida");

@@ -69,7 +69,7 @@ export async function delExpense({ expenseId }) {
   console.log("Gasto eliminado correctamente");
 }
 
-export function listExpenses(opts) {
+export function listExpenses() {
   console.log(
     "ID".padEnd(5),
     "Fecha".padEnd(15),
@@ -87,4 +87,10 @@ export function listExpenses(opts) {
       `$${Amount.toFixed(2)}`.padStart(10),
     );
   });
+}
+
+export function summaryExpenses() {
+  const total = data.reduce((acc, { Amount }) => acc += Amount, 0)
+  
+  console.log(`Gastos totales: $${total.toFixed(2)}`)
 }
