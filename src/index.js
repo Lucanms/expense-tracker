@@ -6,6 +6,6 @@ try {
   const opts = parsedOpts(rawOpts);
   crud(action, opts);
 } catch (err) {
-  console.error(err.message);
+  console.error("Error:", err.message);
   // process.exit(1);
 }
