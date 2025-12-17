@@ -89,8 +89,21 @@ export function listExpenses() {
   });
 }
 
-export function summaryExpenses() {
-  const total = data.reduce((acc, { Amount }) => acc += Amount, 0)
+export function summaryExpenses({ month }) {
+  let filteredData = data
   
-  console.log(`Gastos totales: $${total.toFixed(2)}`)
+  if (month) {
+    filteredData = data.filter(({ CreateAt }) => {
+      return CreateAt.slice(3, 5) === month;
+    });
+    
+    if (filteredData.length === 0) {
+      console.log("No hay gastos registrados en ese mes");
+      return;
+    }
+  }
+
+  const total = filteredData.reduce((acc, { Amount }) => (acc += Amount), 0);
+
+  console.log(`Gastos totales: $${total.toFixed(2)}`);
 }
