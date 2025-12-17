@@ -17,6 +17,16 @@ try {
 const rawData = await fs.readFile(filePath);
 let data = JSON.parse(rawData);
 
+function dataIsEmpty(data) {
+  return !Array.isArray(data) || data.length === 0;
+}
+
+function assertDataNotEmpty(data) {
+  if (dataIsEmpty(data)) {
+    throw new Error("La lista de gastos está vacía");
+  }
+}
+
 export async function addExpense({ description, amount }) {
   const maxId = Math.max(0, ...data.map((item) => item.Id));
   const expenseId = maxId + 1;
@@ -35,6 +45,8 @@ export async function addExpense({ description, amount }) {
 }
 
 export async function updExpense({ expenseId, description, amount }) {
+  assertDataNotEmpty(data);
+
   const expense = data.find(({ Id }) => Id === expenseId);
 
   if (!expense) {
@@ -56,6 +68,8 @@ export async function updExpense({ expenseId, description, amount }) {
 }
 
 export async function delExpense({ expenseId }) {
+  assertDataNotEmpty(data);
+
   const expense = data.find(({ Id }) => Id === expenseId);
 
   if (!expense) {
@@ -70,6 +84,8 @@ export async function delExpense({ expenseId }) {
 }
 
 export function listExpenses() {
+  assertDataNotEmpty(data);
+
   console.log(
     "ID".padEnd(5),
     "Fecha".padEnd(15),
@@ -90,13 +106,15 @@ export function listExpenses() {
 }
 
 export function summaryExpenses({ month }) {
-  let filteredData = data
-  
+  assertDataNotEmpty(data);
+
+  let filteredData = data;
+
   if (month) {
     filteredData = data.filter(({ CreateAt }) => {
       return CreateAt.slice(3, 5) === month;
     });
-    
+
     if (filteredData.length === 0) {
       console.log("No hay gastos registrados en ese mes");
       return;
